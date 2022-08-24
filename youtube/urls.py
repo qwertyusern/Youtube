@@ -5,6 +5,11 @@ from django.urls import path
 from asosiy.views import *
 from rest_framework import permissions
 from userapp.views import *
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 schema_view = get_schema_view(
    openapi.Info(
       title="Youtube",
@@ -18,18 +23,19 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', Posts.as_view()),
+    path('', KanalView.as_view()),
     path('docs/',schema_view.with_ui('swagger', cache_timeout=0), name='swagger-doc'),
-    path('post/<int:pk>/', PostView.as_view()),
+    path('kanal/<int:pk>/', KanalV.as_view()),
     path('users/', Users.as_view()),
     path('user/<int:pk>/', UserGet.as_view()),
     path('efirlar/', Efirlar.as_view()),
     path('efir/<int:pk>/', EfirGet.as_view()),
-    path('medias/', Medias.as_view()),
-    path('media/<int:pk>/', MediaGet.as_view()),
-    path('profils/', Profils.as_view()),
-    path('profil/<int:pk>/', ProfilGet.as_view()),
+    path('videos/', VideoView.as_view()),
+    path('video/<int:pk>/', VideoDelete.as_view()),
+    path('playlists/', PlaylistView.as_view()),
+    path('account/<int:pk>/', AccountView.as_view()),
     path('connections/', Connections.as_view()),
     path('connection/', ConnectionDelete.as_view()),
-
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
