@@ -8,9 +8,9 @@ from rest_framework.response import Response
 class VideoView(generics.ListCreateAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSer
-    def put(self, request, pk):
+    def post(self, request):
         a = Account.objects.get(user=self.request.user)
-        v = Video.objects.get(id=pk)
+        v = Video.objects.get()
         if v.account == a:
             ser = VideoSer(v, data=self.request.data)
             if ser.is_valid():
@@ -29,11 +29,10 @@ class VideoDelete(generics.DestroyAPIView):
 class Efirlar(generics.ListCreateAPIView):
     queryset = Efir.objects.all()
     serializer_class = EfirSer
-    def put(self, request, pk):
+    def post(self, request):
         e = Account.objects.get(user=self.request.user)
-        efir = Efir.objects.get(id=pk)
-        if efir.account == e:
-            ser = EfirSer(efir, data=self.request.data)
+        if e:
+            ser = EfirSer(data=self.request.data)
             if ser.is_valid():
                 ser.save()
             return Response(ser.data)
@@ -62,11 +61,10 @@ class KanalV(generics.RetrieveUpdateAPIView):
 class PlaylistView(generics.ListCreateAPIView):
     queryset = Playlist.objects.all()
     serializer_class = PlaylistSer
-    def put(self, request, pk):
+    def put(self, request):
         e = Account.objects.get(user=self.request.user)
-        p = Playlist.objects.get(id=pk)
-        if p.account == e:
-            ser = PlaylistSer(p, data=self.request.data)
+        if e:
+            ser = PlaylistSer( data=self.request.data)
             if ser.is_valid():
                 ser.save()
             return Response(ser.data)
