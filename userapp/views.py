@@ -17,8 +17,7 @@ class AccountView(generics.RetrieveUpdateAPIView):
     queryset=Account.objects.all()
     serializer_class = AccountSer
     def perform_destroy(self, instance):
-        u = User.objects.get(username=self.request.user)
-        if u:
+        if User==self.request.user:
             instance.delete()
         return Response(instance)
 class Connections(generics.ListCreateAPIView):

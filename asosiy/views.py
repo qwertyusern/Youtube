@@ -9,10 +9,8 @@ class VideoView(generics.ListCreateAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSer
     def post(self, request):
-        a = Account.objects.get(user=self.request.user)
-        v = Video.objects.get()
-        if v.account == a:
-            ser = VideoSer(v, data=self.request.data)
+        if Account.user==self.request.user:
+            ser = VideoSer(data=self.request.data)
             if ser.is_valid():
                 ser.save()
             return Response(ser.data)
@@ -30,8 +28,7 @@ class Efirlar(generics.ListCreateAPIView):
     queryset = Efir.objects.all()
     serializer_class = EfirSer
     def post(self, request):
-        e = Account.objects.get(user=self.request.user)
-        if e:
+        if Account.user==self.request.user:
             ser = EfirSer(data=self.request.data)
             if ser.is_valid():
                 ser.save()
@@ -49,9 +46,8 @@ class KanalV(generics.RetrieveUpdateAPIView):
     queryset = Kanal.objects.all()
     serializer_class = KanalSer
     def partial_update(self, request, *args, **kwargs):
-        k = Kanal.objects.get(account=self.request.user)
-        if k:
-            ser = KanalSer(k, data=self.request.data)
+        if Account.user==self.request.user:
+            ser = KanalSer(data=self.request.data)
             if ser.is_valid():
                 ser.save()
             return Response(ser.data)
@@ -61,9 +57,8 @@ class KanalV(generics.RetrieveUpdateAPIView):
 class PlaylistView(generics.ListCreateAPIView):
     queryset = Playlist.objects.all()
     serializer_class = PlaylistSer
-    def put(self, request):
-        e = Account.objects.get(user=self.request.user)
-        if e:
+    def post(self, request):
+        if Account.user==self.request.user:
             ser = PlaylistSer( data=self.request.data)
             if ser.is_valid():
                 ser.save()
