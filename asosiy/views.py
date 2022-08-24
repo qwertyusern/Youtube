@@ -45,12 +45,12 @@ class KanalView(generics.ListAPIView):
 class KanalV(generics.RetrieveUpdateAPIView):
     queryset = Kanal.objects.all()
     serializer_class = KanalSer
-    def partial_update(self, request, *args, **kwargs):
+    def perform_update(self, serializer):
         if Account.user==self.request.user:
-            ser = KanalSer(data=self.request.data)
-            if ser.is_valid():
-                ser.save()
-            return Response(ser.data)
+            serializer = KanalSer(data=self.request.data)
+            if serializer.is_valid():
+                serializer.save()
+            return Response(serializer.data)
         return Response()
 
 
