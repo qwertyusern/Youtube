@@ -1,33 +1,23 @@
 from django.contrib.auth.models import User
 
 from .models import *
-from userapp.models import Account,Connection
+from userapp.models import Kanal
 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 
-class AccountSer(serializers.ModelSerializer):
+class ReccommendSer(serializers.ModelSerializer):
     class Meta:
-        model=Account
+        model=Reccomend
         fields="__all__"
 
-class ConnectionSer(serializers.ModelSerializer):
-    follower=Account
-    following=Account
-    class Meta:
-        model=Connection
-        fields="__all__"
 
 class CommentSer(serializers.ModelSerializer):
     class Meta:
         model=Comment
         fields="__all__"
 
-class Comment_likeSer(serializers.ModelSerializer):
-    class Meta:
-        model=Comment_like
-        fields="__all__"
 
 class VideoSer(serializers.ModelSerializer):
     class Meta:
