@@ -1,69 +1,83 @@
 from django.shortcuts import render
+from rest_framework.views import APIView
+
 from .models import *
 from userapp.models import Kanal
 from rest_framework import status, generics
 from .serializers import *
 from rest_framework.response import Response
 
-class ReccomendView(generics.ListAPIView):
+class ReccomendApiView(generics.ListAPIView):
     queryset =Reccomend.objects.all()
     serializer_class = ReccommendSer
 
-class VideoView(generics.ListCreateAPIView):
-    queryset = Video.objects.all()
-    serializer_class = VideoSer
+class VideoApiView(APIView):
+    def get(self,request):
+        v=Video.objects.all()
+        ser=VideoSer(v,many=True)
+        return Response(ser.data)
     def post(self, request):
-        k=Kanal.objects.get(user=request.user)
-        if k.user==self.request.user:
-            v=Video.objects.create()
-            ser = VideoSer(v,data=self.request.data)
-            if ser.is_valid():
-                ser.save()
-            return Response(ser.data)
-        return Response()
+        malumot = request.data
+        ser = VideoSer(data=malumot)
+        if ser.is_valid():
+            k = Kanal.objects.get(user=request.user)
+            ser.save(kanal=k)
+        return Response(ser.data)
 
-class VideoV(generics.RetrieveDestroyAPIView):
-    queryset = Video.objects.all()
-    serializer_class = VideoSer
-    def retrieve(self, request, pk):
-        k = Kanal.objects.get(user=self.request.user)
-        if k.user==self.request.user:
-            Video.objects.get(id=pk)
-        return Response()
-    def destroy(self, request,pk):
+class VideoApi(APIView):
+    def get(self, request, pk):
+        v=Video.objects.get(id=pk)
+        ser = VideoSer(v)
+        return Response(ser.data)
+    def delete(self, request,pk):
         k=Kanal.objects.get(user=self.request.user)
-        if k.user==self.request.user:
-            Video.objects.get(id=pk).delete()
-        return Response()
-class Efirlar(generics.ListCreateAPIView):
-    queryset = Efir.objects.all()
-    serializer_class = EfirSer
-    def post(self, request):
-        k = Kanal.objects.get(user=self.request.user)
-        if k.user==self.request.user:
-            e=Efir.objects.create()
-            ser = EfirSer(e,data=self.request.data)
+        v=Video.objects.get(id=pk)
+        if v.kanal==k:
+            malumot = request.data
+            ser = EfirSer(data=malumot)
             if ser.is_valid():
+                v.delete()
                 ser.save()
-            return Response(ser.data)
         return Response()
-class EfirView(generics.RetrieveDestroyAPIView):
-    queryset = Efir.objects.all()
-    serializer_class = EfirSer
-
-
-
-class PlaylistView(generics.ListCreateAPIView):
-    queryset = Playlist.objects.all()
-    serializer_class = PlaylistSer
+class EfirApiVIew(APIView):
+    def get(self,request):
+        e=Efir.objects.all()
+        ser=EfirSer(e,many=True)
+        return Response(ser.data)
     def post(self, request):
+        malumot = request.data
+        ser = EfirSer(data=malumot)
+        if ser.is_valid():
+            k = Kanal.objects.get(user=request.user)
+            ser.save(kanal=k)
+        return Response(ser.data)
+class EfirApi(APIView):
+    def get(self, request, pk):
+        e=Efir.objects.get(id=pk)
+        ser = EfirSer(e)
+        return Response(ser.data)
+    def delete(self, request,pk):
         k=Kanal.objects.get(user=self.request.user)
-        if k.user==self.request.user:
-            p=Playlist.objects.create()
-            ser = PlaylistSer(p, data=self.request.data)
+        e=Efir.objects.get(id=pk)
+        if e.kanal==k:
+            malumot = request.data
+            ser = EfirSer(data=malumot)
             if ser.is_valid():
+                e.delete()
                 ser.save()
-            return Response(ser.data)
         return Response()
+
+class PlaylistApiView(APIView):
+    def get(self,request):
+        p=Playlist.objects.all()
+        ser=PlaylistSer(p,many=True)
+        return Response(ser.data)
+    def post(self, request):
+        malumot = request.data
+        ser = PlaylistSer(data=malumot)
+        if ser.is_valid():
+            k = Kanal.objects.get(user=request.user)
+            ser.save(kanal=k)
+        return Response(ser.data)
 
 

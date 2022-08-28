@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import *
 from asosiy.serializers import KanalSer,UserSer
@@ -13,15 +14,18 @@ class UserGet(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSer
 
 
-class KanalV(generics.RetrieveUpdateAPIView):
-    queryset = Kanal.objects.all()
-    serializer_class = KanalSer
-    def update(self, request,pk):
-        k = Kanal.objects.get(user=self.request.user)
-        if k.user==self.request.user:
-            k=Kanal.objects.get(id=pk).update()
-            serializer = KanalSer(k,data=self.request.data)
-            if serializer.is_valid():
-                serializer.save()
-            return Response(serializer.data)
+class KanalApi(APIView):
+    def get(self, request, pk):
+        k=Kanal.objects.get(id=pk)
+        ser = KanalSer(k)
+        return Response(ser.data)
+    def put(self, request, pk):
+        u = User.objects.get(username=request.user.username)
+        kanal = Kanal.objects.get(id=pk)
+        if kanal.user == u:
+            malumot = request.data
+            ser = KanalSer(data=malumot)
+            if ser.is_valid():
+                ser.save(user=u)
+            return Response(ser.data)
         return Response()
