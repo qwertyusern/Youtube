@@ -33,11 +33,7 @@ class VideoApi(APIView):
         k=Kanal.objects.get(user=self.request.user)
         v=Video.objects.get(id=pk)
         if v.kanal==k:
-            malumot = request.data
-            ser = EfirSer(data=malumot)
-            if ser.is_valid():
-                v.delete()
-                ser.save()
+            v.delete()
         return Response()
 class EfirApiVIew(APIView):
     def get(self,request):
@@ -60,11 +56,7 @@ class EfirApi(APIView):
         k=Kanal.objects.get(user=self.request.user)
         e=Efir.objects.get(id=pk)
         if e.kanal==k:
-            malumot = request.data
-            ser = EfirSer(data=malumot)
-            if ser.is_valid():
-                e.delete()
-                ser.save()
+            e.delete()
         return Response()
 
 class PlaylistApiView(APIView):
@@ -80,4 +72,40 @@ class PlaylistApiView(APIView):
             ser.save(kanal=k)
         return Response(ser.data)
 
+class CommentApiView(APIView):
+    def get(self,request):
+        k=Kanal.objects.get(user=request.user)
+        v=Video.objects.get(kanal=k)
+        c=Comment.objects.all(video=v)
+        ser=CommentSer(c,many=True)
+        return Response(ser.data)
+    def post(self,request):
+        malumot = request.data
+        ser = CommentSer(data=malumot)
+        if ser.is_valid():
+            k = Kanal.objects.get(user=request.user)
+            ser.save(kanal=k)
+        return Response(ser.data)
 
+class CommentDel(APIView):
+    def delete(self,request,pk):
+        k=Kanal.objects.get(user=request.user)
+        c=Comment.objects.get(id=pk)
+        if c.kanal==k:
+            c.delete()
+        return Response()
+
+class LikeApiView(APIView):
+    def get(self,request):
+        k = Kanal.objects.get(user=request.user)
+        v = Video.objects.get(kanal=k)
+        l=Like.objects.all().like_soni
+        ser=LikeSer(l,many=True)
+        return Response(ser.data)
+    def post(self,request):
+        malumot = request.data
+        ser = LikeSer(data=malumot)
+        if ser.is_valid():
+            k = Kanal.objects.get(user=request.user)
+            ser.save(kanal=k)
+        return Response(ser.data)

@@ -23,13 +23,16 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', ReccomendView.as_view()),
+    path('', ReccomendApiView.as_view()),
     path('docs/',schema_view.with_ui('swagger', cache_timeout=0), name='swagger-doc'),
     path('videos/', VideoApiView.as_view()),
     path('video/<int:pk>/', VideoApi.as_view()),
     path('efirlar/', EfirApiVIew.as_view()),
     path('efir/<int:pk>/', EfirApi.as_view()),
     path('playlists/', PlaylistApiView.as_view()),
+    path('comments/', CommentApiView.as_view()),
+    path('comment/<int:pk>', CommentDel.as_view()),
+    path('likes/', LikeApiView.as_view()),
     path('kanal/<int:pk>/', KanalApi.as_view()),
     path('users/', Users.as_view()),
     path('user/<int:pk>/', UserGet.as_view()),

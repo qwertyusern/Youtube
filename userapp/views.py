@@ -24,7 +24,7 @@ class KanalApi(APIView):
         kanal = Kanal.objects.get(id=pk)
         if kanal.user == u:
             malumot = request.data
-            ser = KanalSer(data=malumot)
+            ser = KanalSer(kanal,data=malumot)
             if ser.is_valid():
                 ser.save(user=u)
             return Response(ser.data)
